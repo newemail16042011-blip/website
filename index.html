@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0a1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Eid Mubarak">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="description" content="A special Eid greeting app with heartfelt messages and prayers">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <meta name="msapplication-TileImage" content="favicon.png">
+    <title>Eid Mubarak</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(to bottom, #000000, #0a0a1a);
+            min-height: 100vh;
+            overflow-x: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            position: relative;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: none;
+        }
+
+        /* Prevent horizontal scroll */
+        html {
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+
+        /* Stars Container */
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: var(--min-opacity); transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Shooting Stars */
+        .shooting-star {
+            position: absolute;
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, white, transparent);
+            animation: shoot var(--shoot-duration) linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes shoot {
+            0% { transform: translateX(0) translateY(0); opacity: 1; }
+            100% { transform: translateX(300px) translateY(200px); opacity: 0; }
+        }
+
+        /* Clouds */
+        .clouds-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            filter: blur(20px);
+            animation: float-cloud var(--cloud-duration) ease-in-out infinite;
+        }
+
+        @keyframes float-cloud {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(50px); }
+        }
+
+        /* Moon */
+        .moon-container {
+            position: fixed;
+            top: 8%;
+            right: 10%;
+            z-index: 10;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .moon-container:active {
+            transform: scale(0.95);
+        }
+
+        .moon {
+            width: 35vw;
+            max-width: 180px;
+            height: 35vw;
+            max-height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #fff 0%, #f0f0f0 50%, #e0e0e0 100%);
+            box-shadow: 
+                0 0 50px rgba(255, 255, 255, 0.5),
+                0 0 100px rgba(255, 255, 255, 0.3),
+                inset -20px -20px 50px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .moon-text {
+            text-align: center;
+            margin-top: 15px;
+            color: white;
+            font-size: clamp(10px, 3vw, 16px);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            animation: pulse-text 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-text {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* Glow effect around moon */
+        .moon-glow {
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            right: -10%;
+            bottom: -10%;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+            animation: glow-pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        /* Notification Modal */
+        .notification-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .notification-overlay.show {
+            display: flex;
+        }
+
+        .notification-box {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 50px rgba(255, 182, 193, 0.3);
+            max-width: 350px;
+            width: 100%;
+            animation: pop-in 0.5s ease;
+        }
+
+        @keyframes pop-in {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .notification-text {
+            color: white;
+            font-size: clamp(16px, 5vw, 20px);
+            margin-bottom: 30px;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .heart {
+            color: pink;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 35px;
+            font-size: 18px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            min-width: 140px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-yes {
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            color: white;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
+            width: 100%;
+            max-width: 250px;
+        }
+
+        .btn-yes:active {
+            transform: scale(0.95);
+        }
+
+        .btn-no {
+            background: linear-gradient(135deg, #4a4a4a, #2a2a2a);
+            color: white;
+            box-shadow: 0 0 20px rgba(100, 100, 100, 0.3);
+        }
+
+        .btn-no:active {
+            transform: scale(0.95);
+        }
+
+        /* Mobile Responsive Styles */
+                /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            flex-direction: column;
+        }
+        
+        .loading-overlay.show {
+            display: flex;
+        }
+        
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top: 4px solid #ff69b4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: white;
+            margin-top: 20px;
+            font-size: 18px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        
+        @media screen and (max-width: 480px) {
+            .loader {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .loading-text {
+                font-size: 16px;
+            }
+
+            .moon {
+                width: 38vw;
+                height: 38vw;
+            }
+
+            .moon-text {
+                font-size: 13px;
+            }
+
+            .notification-text {
+                font-size: 16px;
+            }
+
+            .btn {
+                padding: 14px 28px;
+                font-size: 16px;
+            }
+
+            .notification-box {
+                padding: 24px 18px;
+                margin: 20px;
+            }
+        }
+
+        @media screen and (min-width: 768px) {
+            .moon-container {
+                top: 8%;
+                right: 18%;
+            }
+
+            .moon {
+                width: 200px;
+                height: 200px;
+            }
+
+            .moon-text {
+                font-size: 18px;
+            }
+
+            .notification-text {
+                font-size: 22px;
+            }
+
+            .notification-box {
+                padding: 40px;
+            }
+        }
+
+        body {
+            overscroll-behavior: none;
+        }
+
+        /* Smooth transitions */
+        .moon-container, .btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Notification box slide up animation */
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .notification-box {
+            animation: slideUp 0.5s ease, pop-in 0.4s ease;
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            flex-direction: column;
+        }
+        
+        .loading-overlay.show {
+            display: flex;
+        }
+        
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top: 4px solid #ff69b4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: white;
+            margin-top: 20px;
+            font-size: 18px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        
+        /* Admin Link */
+        .admin-link {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            opacity: 0.3;
+        }
+        
+        .admin-link:hover {
+            opacity: 1;
+            transform: rotate(90deg);
+        }
+    </style>
+</head>
+<body>
+    <!-- Stars -->
+    <div class="stars-container" id="stars"></div>
+    
+    <!-- Shooting Stars -->
+    <div class="shooting-stars" id="shooting-stars"></div>
+    
+    <!-- Clouds -->
+    <div class="clouds-container" id="clouds"></div>
+    
+    <!-- Moon -->
+    <div class="moon-container" onclick="goToMain()">
+        <div class="moon-glow"></div>
+        <div class="moon">
+        </div>
+        <p class="moon-text">🌙 Tap the Moon</p>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification-overlay" id="notification">
+        <div class="notification-box">
+            <p class="notification-text">
+                Just give me permission… I want to say something to you.<br>
+                <span class="heart">🤍</span>
+            </p>
+            <div class="btn-group">
+                <button class="btn btn-yes" onclick="handleYes()">Yes</button>
+                <button class="btn btn-no" onclick="handleNo()">No</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading">
+        <div class="loader"></div>
+        <p class="loading-text">Loading...</p>
+    </div>
+
+    <!-- Admin Link -->
+    <a href="admin/login.html" class="admin-link" title="Admin Panel">⚙️</a>
+
+    <script>
+        // Register Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registered: ', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+        
+        // Create stars
+        function createStars() {
+            const container = document.getElementById('stars');
+            const starCount = window.innerWidth < 480 ? 150 : 300;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                const size = Math.random() * 3 + 1;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                
+                const duration = Math.random() * 3 + 1;
+                star.style.setProperty('--duration', duration + 's');
+                star.style.setProperty('--min-opacity', Math.random() * 0.3 + 0.2);
+                
+                star.style.animationDelay = Math.random() * 3 + 's';
+                
+                container.appendChild(star);
+            }
+        }
+
+        // Create shooting stars
+        function createShootingStars() {
+            const container = document.getElementById('shooting-stars');
+            
+            for (let i = 0; i < 5; i++) {
+                const star = document.createElement('div');
+                star.className = 'shooting-star';
+                star.style.left = Math.random() * 70 + '%';
+                star.style.top = Math.random() * 50 + '%';
+                star.style.setProperty('--shoot-duration', (Math.random() * 2 + 1) + 's');
+                star.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(star);
+            }
+        }
+
+        // Create clouds
+        function createClouds() {
+            const container = document.getElementById('clouds');
+            
+            for (let i = 0; i < 8; i++) {
+                const cloud = document.createElement('div');
+                cloud.className = 'cloud';
+                
+                const width = Math.random() * 200 + 100;
+                const height = Math.random() * 80 + 40;
+                cloud.style.width = width + 'px';
+                cloud.style.height = height + 'px';
+                cloud.style.left = Math.random() * 100 + '%';
+                cloud.style.top = Math.random() * 60 + '%';
+                cloud.style.setProperty('--cloud-duration', (Math.random() * 20 + 10) + 's');
+                cloud.style.animationDelay = Math.random() * 10 + 's';
+                
+                container.appendChild(cloud);
+            }
+        }
+
+        // Notification functions
+        function showNotification() {
+            document.getElementById('notification').classList.add('show');
+        }
+
+        async function handleYes() {
+            // Show loading overlay first
+            document.getElementById('loading').classList.add('show');
+            
+            const notification = document.getElementById('notification');
+            const btnYes = notification.querySelector('.btn-yes');
+            btnYes.textContent = 'Loading...';
+            btnYes.disabled = true;
+            
+            // Short delay then navigate
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Go to main.html
+            window.location.href = 'main.html';
+        }
+
+        function handleNo() {
+            window.location.href = '2nd.html';
+        }
+
+        // API Base URL - change to your server URL
+        const API_URL = 'http://localhost:3000/api';
+        let startTime = Date.now();
+        
+        // Moon click function
+        function goToMain() {
+            window.location.href = 'main.html';
+        }
+        
+        // Track file view
+        async function trackFileView(filename) {
+            try {
+                await fetch(API_URL + '/fileviews', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ filename: filename })
+                });
+            } catch (err) {
+                // Fallback to localStorage
+                let viewedFiles = [];
+                const saved = localStorage.getItem('viewedFiles');
+                if (saved) {
+                    viewedFiles = JSON.parse(saved);
+                }
+                viewedFiles.push({
+                    filename: filename,
+                    timestamp: Date.now(),
+                    timeSpent: 0
+                });
+                localStorage.setItem('viewedFiles', JSON.stringify(viewedFiles));
+            }
+        }
+        
+        // Track time spent when leaving
+        window.addEventListener('beforeunload', async function() {
+            const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+            try {
+                await fetch(API_URL + '/fileviews', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        filename: 'index.html',
+                        timeSpent: timeSpent
+                    })
+                });
+            } catch (err) {
+                // Ignore errors on unload
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            createShootingStars();
+            createClouds();
+            
+            // Track file view
+            trackFileView('index.html');
+            
+            // Show notification after 1 second
+            setTimeout(showNotification, 1000);
+        });
+    </script>
+</body>
+</html>

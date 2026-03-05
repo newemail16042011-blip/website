@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>Chat - Eid Mubarak</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
+        }
+
+        .chat-header h1 {
+            color: #fff;
+            font-size: 18px;
+        }
+
+        .back-btn {
+            color: #ff69b4;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 15px;
+            border: 1px solid rgba(255, 105, 180, 0.5);
+            border-radius: 20px;
+        }
+
+        .chat-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-height: 0;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            color: #fff;
+            font-size: 15px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .message.sent {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.received {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.15);
+            border-bottom-left-radius: 5px;
+        }
+
+        .message .seen {
+            font-size: 10px;
+            opacity: 0.7;
+            text-align: right;
+            margin-top: 5px;
+            color: #4ade80;
+        }
+
+        .message img {
+            max-width: 200px;
+            border-radius: 10px;
+            margin-top: 8px;
+            display: block;
+        }
+
+        .message .voice-message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px 12px;
+            border-radius: 25px;
+            margin-top: 8px;
+        }
+
+        .message .voice-message .play-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #ff69b4;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            flex-shrink: 0;
+        }
+
+        .message .voice-message .waveform {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            height: 20px;
+        }
+
+        .message .voice-message .waveform span {
+            width: 3px;
+            background: #ff69b4;
+            border-radius: 2px;
+        }
+
+        .chat-input-container {
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .chat-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255, 105, 180, 0.3);
+        }
+
+        .icon-btn.recording {
+            background: #dc3545;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .send-btn {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        #imageInput {
+            display: none;
+        }
+
+        .recording-timer {
+            color: #dc3545;
+            font-size: 12px;
+            text-align: center;
+            display: none;
+        }
+
+        .recording-timer.active {
+            display: block;
+        }
+
+        .no-messages {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            padding: 20px;
+        }
+
+        .message .delete-msg-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .message:hover .delete-msg-btn {
+            opacity: 1;
+        }
+
+        .message {
+            position: relative;
+        }
+
+        /* Chart Card Styles */
+        .chart-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 300px;
+            align-self: center;
+        }
+
+        .chart-card h3 {
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .chart-wrapper {
+            height: 150px;
+            overflow-y: auto;
+        }
+
+        .chart-wrapper canvas {
+            max-height: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-header">
+        <a href="main.html" class="back-btn">← Back</a>
+        <h1>💬 Chat</h1>
+        <div></div>
+    </div>
+
+    <div class="chat-container" id="chatContainer">
+        <div class="chart-card">
+            <h3>📊 Chat Statistics</h3>
+            <div class="chart-wrapper">
+                <canvas id="chatChart"></canvas>
+            </div>
+        </div>
+        <div class="no-messages" id="noMessages">
+            <p>Connecting to chat...</p>
+        </div>
+    </div>
+
+    <div class="chat-input-container">
+        <div class="recording-timer" id="recordingTimer">Recording... 0s</div>
+        <div class="input-row">
+            <button class="icon-btn" onclick="document.getElementById('imageInput').click()" title="Send Image">📷</button>
+            <input type="file" id="imageInput" accept="image/*" onchange="sendImage()">
+            
+            <button class="icon-btn" id="voiceBtn" title="Voice Disabled" style="opacity: 0.3; cursor: not-allowed;">🎤</button>
+            
+            <input type="text" class="chat-input" id="messageInput" placeholder="Type a message...">
+            
+            <button class="send-btn" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        
+        const chatContainer = document.getElementById('chatContainer');
+        const noMessagesDiv = document.getElementById('noMessages');
+        const messageInput = document.getElementById('messageInput');
+        const voiceBtn = document.getElementById('voiceBtn');
+        const recordingTimer = document.getElementById('recordingTimer');
+        
+        let messages = [];
+        let startTime = Date.now();
+        let isLoading = true;
+        let mediaRecorder;
+        let audioChunks = [];
+        let recordingInterval;
+        let recordingSeconds = 0;
+
+        async function loadMessages() {
+            try {
+                const response = await fetch(API_URL + '/messages');
+                if (response.ok) {
+                    const serverMessages = await response.json();
+                    if (JSON.stringify(serverMessages) !== JSON.stringify(messages)) {
+                        messages = serverMessages;
+                        displayMessages();
+                    }
+                    isLoading = false;
+                }
+            } catch (err) {
+                console.log('Using local messages');
+                isLoading = false;
+                try {
+                    const saved = localStorage.getItem('chatMessages');
+                    if (saved) {
+                        messages = JSON.parse(saved);
+                        displayMessages();
+                    }
+                } catch (e) {}
+            }
+        }
+
+        function displayMessages() {
+            if (isLoading) return;
+
+            if (!messages || messages.length === 0) {
+                noMessagesDiv.style.display = 'block';
+                noMessagesDiv.innerHTML = '<p>No messages yet</p><p style="margin-top:10px;font-size:14px">Start the conversation!</p>';
+                return;
+            }
+
+            noMessagesDiv.style.display = 'none';
+            
+            let html = '';
+            messages.forEach(function(msg) {
+                let msgType = 'sent';
+                if (msg.sender === 'Admin' || msg.type === 'admin' || msg.type === 'received') {
+                    msgType = 'received';
+                }
+                
+                let messageContent = '';
+                
+                // Handle text message
+                if (msg.text && msg.text !== '[Image]' && msg.text !== '[Voice Message]') {
+                    messageContent = escapeHtml(msg.text);
+                }
+                
+                // Handle image
+                if (msg.image) {
+                    messageContent += '<br><img src="' + msg.image + '" alt="Image">';
+                }
+                
+                // Handle voice
+                if (msg.voice) {
+                    messageContent += '<div class="voice-message"><button class="play-btn" onclick="playAudio(this, \'' + msg.voice + '\')">▶</button><div class="waveform"><span></span><span></span><span></span><span></span><span></span></div></div>';
+                }
+                
+                const seenHtml = msg.seen ? '<div class="seen">✓ Seen</div>' : '';
+                const deleteBtn = '<button class="delete-msg-btn" onclick="deleteMessage(' + msg.id + ')">🗑️</button>';
+                html += '<div class="message ' + msgType + '" id="msg-' + msg.id + '">' + deleteBtn + messageContent + seenHtml + '</div>';
+            });
+
+            chatContainer.innerHTML = html + noMessagesDiv.outerHTML;
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function playAudio(btn, audioData) {
+            const audio = new Audio(audioData);
+            audio.play();
+            btn.textContent = '⏸';
+            audio.onended = function() {
+                btn.textContent = '▶';
+            };
+        }
+
+        async function sendMessage() {
+            const text = messageInput.value.trim();
+            if (!text) return;
+
+            const newMessage = {
+                text: text,
+                type: 'sent',
+                sender: 'User',
+                time: Date.now(),
+                seen: false
+            };
+            
+            messages.push(newMessage);
+            displayMessages();
+            messageInput.value = '';
+
+            try {
+                localStorage.setItem('chatMessages', JSON.stringify(messages));
+            } catch (e) {}
+
+            try {
+                await fetch(API_URL + '/messages', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        text: text,
+                        type: 'user',
+                        sender: 'User'
+                    })
+                });
+            } catch (err) {
+                console.log('Could not send to server');
+            }
+        }
+
+        async function sendImage() {
+            const input = document.getElementById('imageInput');
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const imageData = e.target.result;
+                
+                const newMessage = {
+                    text: '[Image]',
+                    image: imageData,
+                    type: 'sent',
+                    sender: 'User',
+                    time: Date.now(),
+                    seen: false
+                };
+                
+                messages.push(newMessage);
+                displayMessages();
+                input.value = '';
+
+                try {
+                    await fetch(API_URL + '/messages', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            text: '[Image]',
+                            image: imageData,
+                            type: 'user',
+                            sender: 'User'
+                        })
+                    });
+                } catch (err) {
+                    console.log('Could not send image to server');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                
+                mediaRecorder.ondataavailable = function(e) {
+                    audioChunks.push(e.data);
+                };
+                
+                mediaRecorder.onstop = async function() {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const reader = new FileReader();
+                    reader.onload = async function(e) {
+                        const audioData = e.target.result;
+                        
+                        const newMessage = {
+                            text: '[Voice Message]',
+                            voice: audioData,
+                            type: 'sent',
+                            sender: 'User',
+                            time: Date.now(),
+                            seen: false
+                        };
+                        
+                        messages.push(newMessage);
+                        displayMessages();
+
+                        try {
+                            await fetch(API_URL + '/messages', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    text: '[Voice Message]',
+                                    voice: audioData,
+                                    type: 'user',
+                                    sender: 'User'
+                                })
+                            });
+                        } catch (err) {
+                            console.log('Could not send voice to server');
+                        }
+                    };
+                    reader.readAsDataURL(audioBlob);
+                };
+                
+                mediaRecorder.start();
+                voiceBtn.classList.add('recording');
+                recordingTimer.classList.add('active');
+                recordingSeconds = 0;
+                recordingTimer.textContent = 'Recording... 0s';
+                
+                recordingInterval = setInterval(function() {
+                    recordingSeconds++;
+                    recordingTimer.textContent = 'Recording... ' + recordingSeconds + 's';
+                }, 1000);
+                
+            } catch (err) {
+                console.log('Could not start recording: ' + err);
+                alert('Microphone access required for voice messages');
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                voiceBtn.classList.remove('recording');
+                recordingTimer.classList.remove('active');
+                clearInterval(recordingInterval);
+            }
+        }
+
+        async function deleteMessage(id) {
+            if (!confirm('Delete this message?')) return;
+            
+            // Remove from local array
+            messages = messages.filter(msg => msg.id !== id);
+            displayMessages();
+            
+            // Save to localStorage
+            try {
+                localStorage.setItem('chatMessages', JSON.stringify(messages));
+            } catch (e) {}
+            
+            // Delete from server
+            try {
+                await fetch(API_URL + '/messages/' + id, {
+                    method: 'DELETE'
+                });
+            } catch (err) {
+                console.log('Could not delete from server');
+            }
+        }
+
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        async function trackFileView(filename) {
+            try {
+                await fetch(API_URL + '/fileviews', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ filename: filename })
+                });
+            } catch (err) {}
+        }
+
+        window.addEventListener('beforeunload', async function() {
+            const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+            try {
+                await fetch(API_URL + '/fileviews', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        filename: 'chat.html',
+                        timeSpent: timeSpent
+                    })
+                });
+            } catch (err) {}
+        });
+
+        loadMessages();
+        trackFileView('chat.html');
+        initChart();
+        
+        setInterval(function() {
+            loadMessages();
+        }, 3000);
+
+        // Initialize Chart
+        function initChart() {
+            const ctx = document.getElementById('chatChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Messages',
+                        data: [12, 19, 8, 15, 22, 10, 14],
+                        backgroundColor: 'rgba(255, 105, 180, 0.7)',
+                        borderColor: 'rgba(255, 105, 180, 1)',
+                        borderWidth: 1,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                font: { size: 10 }
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                font: { size: 10 }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1a1a2e">
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <link rel="shortcut icon" type="image/png" href="../favicon.png">
+    <link rel="apple-touch-icon" href="../favicon.png">
+    <meta name="msapplication-TileImage" content="../favicon.png">
+    <title>Admin Panel - Eid Mubarak</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header h2 {
+            color: #fff;
+            font-size: 24px;
+        }
+
+        .sidebar-header p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-menu li {
+            margin-bottom: 10px;
+        }
+
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            background: rgba(233, 69, 96, 0.2);
+            color: #e94560;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #fff;
+            font-size: 28px;
+        }
+
+        .logout-btn {
+            padding: 10px 20px;
+            background: rgba(233, 69, 96, 0.2);
+            border: 1px solid #e94560;
+            border-radius: 8px;
+            color: #e94560;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            background: #e94560;
+            color: #fff;
+        }
+
+        .alert-box {
+            background: rgba(255, 193, 7, 0.2);
+            border: 1px solid #ffc107;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            color: #ffc107;
+        }
+
+        .media-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .media-section h2 {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .video-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .camera-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .camera-box h3 {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .camera-preview {
+            width: 100%;
+            min-height: 200px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .no-recordings {
+            color: rgba(255, 255, 255, 0.5);
+            text-align: center;
+            padding: 30px;
+            font-size: 14px;
+        }
+
+        /* Album Grid */
+        .album-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .album-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            aspect-ratio: 1;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .album-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .album-item img:hover {
+            transform: scale(1.1);
+        }
+
+        .album-item .date {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 10px;
+            padding: 4px;
+            text-align: center;
+        }
+
+        /* Voice Messages List */
+        .voice-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .voice-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .voice-item .play-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e94560, #ff6b6b);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .voice-item .voice-info {
+            flex: 1;
+        }
+
+        .voice-item .voice-info .time {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+        }
+
+        .voice-item .voice-info .date {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 11px;
+        }
+
+        .quick-actions {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 20px;
+        }
+
+        .quick-actions h2 {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .action-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Modal for image preview */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+        }
+
+        .modal .close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h2>Admin Panel</h2>
+            <p>Eid Mubarak</p>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="admin.html" class="active" onclick="showSection('activity')">📊 Dashboard</a></li>
+            <li><a href="adminchat.html">💬 Chat</a></li>
+            <li><a href="user.html">📸 User Album</a></li>
+            <li><a href="voice.html">🎤 Voice Messages</a></li>
+            <li><a href="../index.html">🌙 View Site</a></li>
+            <li><a href="#" onclick="logout()">🚪 Logout</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <div class="header">
+            <h1>📊 Admin Dashboard</h1>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+
+        <div class="alert-box">
+            ⚠️ <strong>Note:</strong> User album and voice messages come from chat. When user sends images or voice in chat, they appear here.
+        </div>
+
+        <!-- User Activity Section -->
+        <div class="media-section">
+            <h2>📊 User Activity</h2>
+            <p style="color: rgba(255,255,255,0.7); margin-bottom: 20px;">Track which files users viewed and how long they stayed</p>
+             
+            <div class="video-container">
+                <div class="camera-box">
+                    <h3>📁 Files Viewed</h3>
+                    <div class="camera-preview">
+                        <div id="filesList" style="padding: 15px; max-height: 300px; overflow-y: auto;">
+                            <p class="no-recordings">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+                 
+                <div class="camera-box">
+                    <h3>🎬 Videos Watched</h3>
+                    <div class="camera-preview">
+                        <div id="videosList" style="padding: 15px; max-height: 300px; overflow-y: auto;">
+                            <p class="no-recordings">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Album Section -->
+        <div class="media-section" id="albumSection" style="display:none;">
+            <h2>📸 User Album</h2>
+            <p style="color: rgba(255,255,255,0.7); margin-bottom: 20px;">Images sent by users in chat</p>
+            <div class="album-grid" id="albumGrid">
+                <p class="no-recordings">Loading images...</p>
+            </div>
+        </div>
+
+        <!-- User Voice Section -->
+        <div class="media-section" id="voiceSection" style="display:none;">
+            <h2>🎤 Voice Messages</h2>
+            <p style="color: rgba(255,255,255,0.7); margin-bottom: 20px;">Voice messages from users</p>
+            <div class="voice-list" id="voiceList">
+                <p class="no-recordings">Loading voice messages...</p>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <h2>Quick Links</h2>
+            <div class="action-buttons">
+                <a href="../index.html" class="action-btn">🌙 Home</a>
+                <a href="../main.html" class="action-btn secondary">🎆 Main</a>
+                <a href="../2nd.html" class="action-btn secondary">🎇 Gallery</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Image Modal -->
+    <div class="modal" id="imageModal" onclick="closeModal()">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img id="modalImage" src="" alt="Preview">
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        
+        let viewedFiles = [];
+        let watchedVideos = [];
+        let chatMessages = [];
+        
+        function checkAuth() {
+            if (!localStorage.getItem('adminLoggedIn')) {
+                window.location.href = 'login.html';
+            }
+            loadActivity();
+            loadChatMessages();
+            setInterval(loadActivity, 5000);
+            setInterval(loadChatMessages, 5000);
+        }
+
+        function logout() {
+            localStorage.removeItem('adminLoggedIn');
+            window.location.href = 'login.html';
+        }
+
+        function showSection(section) {
+            document.getElementById('albumSection').style.display = 'none';
+            document.getElementById('voiceSection').style.display = 'none';
+            
+            if (section === 'album') {
+                document.getElementById('albumSection').style.display = 'block';
+            } else if (section === 'voice') {
+                document.getElementById('voiceSection').style.display = 'block';
+            }
+        }
+
+        async function loadActivity() {
+            try {
+                const response = await fetch(API_URL + '/fileviews');
+                if (response.ok) {
+                    viewedFiles = await response.json();
+                }
+            } catch (err) {
+                const filesData = localStorage.getItem('viewedFiles');
+                if (filesData) {
+                    viewedFiles = JSON.parse(filesData);
+                }
+            }
+            showFilesActivity();
+
+            const videosData = localStorage.getItem('watchedVideos');
+            if (videosData) {
+                watchedVideos = JSON.parse(videosData);
+                showVideosActivity();
+            }
+        }
+
+        async function loadChatMessages() {
+            try {
+                const response = await fetch(API_URL + '/messages');
+                if (response.ok) {
+                    chatMessages = await response.json();
+                    showUserAlbum();
+                    showVoiceMessages();
+                }
+            } catch (err) {
+                console.log('Could not load messages');
+            }
+        }
+
+        function showFilesActivity() {
+            const list = document.getElementById('filesList');
+            
+            if (!viewedFiles || !viewedFiles.length) {
+                list.innerHTML = '<p class="no-recordings">No files viewed yet</p>';
+                return;
+            }
+
+            const sorted = [...viewedFiles].sort((a, b) => new Date(b.enteredAt || b.timestamp) - new Date(a.enteredAt || a.timestamp));
+            
+            list.innerHTML = sorted.slice(0, 20).map(f => {
+                const timeSpent = f.timeSpent || 0;
+                const enterTime = f.enteredAt || f.timestamp;
+                
+                return `
+                <div style="background: rgba(255,255,255,0.1); border-radius: 8px; padding: 10px; margin-bottom: 8px;">
+                    <p style="color: #ff69b4; font-weight: bold; font-size: 13px;">📄 ${f.filename}</p>
+                    <p style="color: rgba(255,255,255,0.7); font-size: 11px;">⏱️ ${formatTime(timeSpent)}</p>
+                    <p style="color: rgba(255,255,255,0.5); font-size: 10px;">🕐 ${new Date(enterTime).toLocaleString()}</p>
+                </div>
+            `}).join('');
+        }
+
+        function showVideosActivity() {
+            const list = document.getElementById('videosList');
+            
+            if (!watchedVideos || !watchedVideos.length) {
+                list.innerHTML = '<p class="no-recordings">No videos watched yet</p>';
+                return;
+            }
+
+            const sorted = [...watchedVideos].sort((a, b) => b.timestamp - a.timestamp);
+            
+            list.innerHTML = sorted.slice(0, 20).map(v => `
+                <div style="background: rgba(255,255,255,0.1); border-radius: 8px; padding: 10px; margin-bottom: 8px;">
+                    <p style="color: #ffd700; font-weight: bold; font-size: 13px;">🎬 ${v.videoname}</p>
+                    <p style="color: rgba(255,255,255,0.7); font-size: 11px;">⏱️ ${formatTime(v.watchTime)}</p>
+                    <p style="color: rgba(255,255,255,0.5); font-size: 10px;">🕐 ${new Date(v.timestamp).toLocaleString()}</p>
+                </div>
+            `).join('');
+        }
+
+        function showUserAlbum() {
+            const grid = document.getElementById('albumGrid');
+            
+            // Filter only user images (not admin)
+            const userImages = chatMessages.filter(msg => msg.image && msg.sender !== 'Admin');
+            
+            if (!userImages || userImages.length === 0) {
+                grid.innerHTML = '<p class="no-recordings" style="grid-column: 1/-1;">No images sent by users yet</p>';
+                return;
+            }
+
+            grid.innerHTML = userImages.map((msg, index) => `
+                <div class="album-item">
+                    <img src="${msg.image}" alt="User Image ${index + 1}" onclick="showImage('${msg.image}')">
+                    <div class="date">${new Date(msg.time || msg.timestamp).toLocaleDateString()}</div>
+                </div>
+            `).join('');
+        }
+
+        function showVoiceMessages() {
+            const list = document.getElementById('voiceList');
+            
+            // Filter only user voice messages (not admin)
+            const userVoice = chatMessages.filter(msg => msg.voice && msg.sender !== 'Admin');
+            
+            if (!userVoice || userVoice.length === 0) {
+                list.innerHTML = '<p class="no-recordings">No voice messages from users yet</p>';
+                return;
+            }
+
+            list.innerHTML = userVoice.map((msg, index) => `
+                <div class="voice-item">
+                    <button class="play-btn" onclick="playVoice(this, '${msg.voice}')">▶</button>
+                    <div class="voice-info">
+                        <div class="time">Voice Message ${index + 1}</div>
+                        <div class="date">${new Date(msg.time || msg.timestamp).toLocaleString()}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showImage(src) {
+            document.getElementById('modalImage').src = src;
+            document.getElementById('imageModal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('imageModal').classList.remove('show');
+        }
+
+        function playVoice(btn, audioData) {
+            const audio = new Audio(audioData);
+            audio.play();
+            btn.textContent = '⏸';
+            audio.onended = function() {
+                btn.textContent = '▶';
+            };
+        }
+
+        function formatTime(seconds) {
+            if (!seconds || seconds < 60) return (seconds || 0) + ' seconds';
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            if (mins < 60) return mins + 'm ' + secs + 's';
+            const hours = Math.floor(mins / 60);
+            const remainingMins = mins % 60;
+            return hours + 'h ' + remainingMins + 'm';
+        }
+
+        checkAuth();
+    </script>
+</body>
+</html>

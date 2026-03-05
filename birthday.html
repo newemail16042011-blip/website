@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Advance Happy Birthday, Zanib 🤍✨</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Pinyon+Script&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1a1a2e);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: floatParticle 15s infinite ease-in-out;
+        }
+
+        @keyframes floatParticle {
+            0%, 100% { transform: translateY(100vh) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) translateX(100px) rotate(720deg); opacity: 0; }
+        }
+
+        /* Stars */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
+
+        /* Floating Hearts */
+        .hearts-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0.4;
+            animation: floatHeart 12s infinite ease-in-out;
+        }
+
+        @keyframes floatHeart {
+            0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.4; }
+            90% { opacity: 0.4; }
+            100% { transform: translateY(-20vh) scale(1) rotate(-20deg); opacity: 0; }
+        }
+
+        /* Back Button */
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 154, 158, 0.5);
+            border-radius: 25px;
+            color: #ff9a9e;
+            font-family: 'Playfair Display', serif;
+            font-size: 14px;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 154, 158, 0.2);
+            transform: scale(1.05);
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 100%;
+            padding: 80px 20px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Top Image */
+        .top-image {
+            width: 100%;
+            max-width: 350px;
+            max-height: 350px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            margin-bottom: 30px;
+            object-fit: cover;
+        }
+
+        /* Title */
+        .title {
+            font-family: 'Pinyon Script', cursive;
+            font-size: 42px;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255, 154, 158, 0.8), 0 0 40px rgba(255, 154, 158, 0.5);
+            text-align: center;
+            margin-bottom: 30px;
+            animation: glow 3s infinite ease-in-out;
+        }
+
+        @keyframes glow {
+            0% { text-shadow: 0 0 20px rgba(255, 154, 158, 0.8), 0 0 40px rgba(255, 154, 158, 0.5); }
+            50% { text-shadow: 0 0 30px rgba(255, 154, 158, 1), 0 0 60px rgba(255, 154, 158, 0.8); }
+            100% { text-shadow: 0 0 20px rgba(255, 154, 158, 0.8), 0 0 40px rgba(255, 154, 158, 0.5); }
+        }
+
+        /* Wish Container */
+        .wish-container {
+            width: 100%;
+            max-width: 700px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 154, 158, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .wish-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.8;
+            text-align: center;
+            white-space: pre-wrap;
+        }
+
+        .wish-text .highlight {
+            color: #ff9a9e;
+            font-weight: 600;
+        }
+
+        .wish-text .dua {
+            color: #a18cd1;
+            font-style: italic;
+        }
+
+        /* Video Container */
+        .video-container {
+            display: none;
+        }
+
+        /* Corner Decorations */
+        .corner-decor {
+            position: fixed;
+            width: 150px;
+            height: 150px;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .corner-decor.top-left {
+            top: 20px;
+            left: 20px;
+            border-top: 2px solid #ff9a9e;
+            border-left: 2px solid #ff9a9e;
+        }
+
+        .corner-decor.top-right {
+            top: 20px;
+            right: 20px;
+            border-top: 2px solid #ff9a9e;
+            border-right: 2px solid #ff9a9e;
+        }
+
+        .corner-decor.bottom-left {
+            bottom: 20px;
+            left: 20px;
+            border-bottom: 2px solid #ff9a9e;
+            border-left: 2px solid #ff9a9e;
+        }
+
+        .corner-decor.bottom-right {
+            bottom: 20px;
+            right: 20px;
+            border-bottom: 2px solid #ff9a9e;
+            border-right: 2px solid #ff9a9e;
+        }
+
+        /* Audio Control */
+        .audio-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .audio-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 154, 158, 0.5);
+            color: #ff9a9e;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .audio-btn:hover {
+            background: rgba(255, 154, 158, 0.2);
+            transform: scale(1.1);
+        }
+
+        .audio-btn.playing {
+            animation: musicPulse 2s infinite ease-in-out;
+        }
+
+        @keyframes musicPulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 154, 158, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(255, 154, 158, 0.8); }
+        }
+
+        /* Cursor Trail */
+        .cursor-trail {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+            font-size: 16px;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .corner-decor {
+                display: none;
+            }
+            
+            .title {
+                font-size: 32px;
+            }
+            
+            .wish-container {
+                padding: 20px;
+            }
+            
+            .wish-text {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .top-image {
+                max-width: 280px;
+                max-height: 280px;
+            }
+            
+            .title {
+                font-size: 28px;
+            }
+            
+            .back-btn {
+                top: 10px;
+                left: 10px;
+                padding: 8px 15px;
+                font-size: 12px;
+            }
+            
+            .container {
+                padding: 70px 15px 30px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .top-image {
+                max-width: 220px;
+                max-height: 220px;
+            }
+            
+            .title {
+                font-size: 24px;
+            }
+            
+            .wish-text {
+                font-size: 13px;
+                line-height: 1.6;
+            }
+        }
+
+        @media (max-height: 500px) and (orientation: landscape) {
+            .container {
+                padding: 60px 20px 20px;
+            }
+            
+            .top-image {
+                max-width: 150px;
+                max-height: 150px;
+                margin-bottom: 15px;
+            }
+            
+            .title {
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+            
+            .wish-container {
+                padding: 15px;
+            }
+            
+            .wish-text {
+                font-size: 12px;
+                line-height: 1.4;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="particles" id="particles"></div>
+    <div class="stars" id="stars"></div>
+    <div class="hearts-container" id="hearts"></div>
+
+    <!-- Corner Decorations -->
+    <div class="corner-decor top-left"></div>
+    <div class="corner-decor top-right"></div>
+    <div class="corner-decor bottom-left"></div>
+    <div class="corner-decor bottom-right"></div>
+
+    <!-- Back Button -->
+    <a href="main.html" class="back-btn" id="backBtn">← Back</a>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Top Image -->
+        <img src="image2.png" alt="For Zanib" class="top-image">
+        
+        <!-- Title -->
+        <h1 class="title">Advance Happy Birthday, Zanib 🤍✨</h1>
+        
+        <!-- Wish Container -->
+        <div class="wish-container">
+            <p class="wish-text">
+I know your birthday is next month, but my heart refused to stay silent until then. Maybe it's too early, maybe it's unexpected — but feelings like mine don't follow calendars. They move with sincerity, with longing, with quiet love that still breathes your name in soft corners of the night. I don't know what place I hold in your life now. Maybe I am just a memory. Maybe I am nothing at all. But even if I am only a distant thought in your world, you are still a prayer in mine.
+
+Zanib, loving you was never something loud or dramatic. It was deep. It was the kind of love that grows silently, like roots under the soil — unseen but strong. The kind that stays awake at 2 a.m. wondering if you are okay. The kind that smiles alone remembering your laughter. The kind that never wished to cage you, only to see you happy — even if that happiness didn't include me.
+
+On your upcoming birthday, I don't just wish you happiness. I pray for a love that chooses you every single day. I pray that someone holds your hand with pride, not hesitation. Someone who looks at you like you are the best decision they ever made. Someone who protects your heart the way I silently asked Allah to protect it for me. 🤲
+
+<span class="dua">Ya Allah, on her birthday, wrap her life in mercy. Write her destiny with joy that stays. Give her a heart that never feels unloved, never feels second, never feels forgotten. Place in her life a man who understands her silence, who listens to her fears, who values her softness, and who respects her strength. Give her a love that is gentle, halal, loyal, and deep — the kind of love that feels like home.</span>
+
+Zanib, if I could gift you something beyond material things, I would gift you emotional safety. I would gift you peace of mind. I would gift you the assurance that you will never have to question your worth again. Because you were never ordinary. You were always rare. And rare things deserve to be handled with care, not confusion.
+
+I don't know if next month I will have the right to message you. I don't know if circumstances will allow my words to reach you. Maybe there will be silence between us. Maybe there will be distance that cannot be crossed. That's why I am saying it now — because what if next month there is no medium left through which I can wish you? What if life moves us so far apart that even a simple "Happy Birthday" becomes impossible? I don't want to risk missing the chance to tell you that your existence matters deeply.
+
+On your birthday, I hope you wake up feeling special — not because of decorations or gifts, but because your heart feels full. I hope someone surprises you in a way that makes your eyes shine. I hope you laugh loudly. I hope you feel chosen. I hope you feel loved without asking for it.
+
+And selfishly, in a quiet hidden corner of my heart, I hope that for one second on that day, you remember me. Not with pain. Not with regret. But with softness. With a small smile. With the thought that once, there was someone who loved you deeply and sincerely.
+
+<span class="dua">Ya Allah, increase her beauty in character, in soul, in faith. Give her success that makes her proud of herself. Give her achievements that silence every doubt she ever had. Remove from her life every fake friend, every dishonest heart, every person who does not see her value. Replace them with people who respect her, uplift her, and celebrate her presence.</span>
+
+Zanib, if love was measured by how much someone prays for you when they no longer have you — then maybe you would understand how deeply I still care. I don't want to disturb your peace. I don't want to complicate your life. I only want you to experience the kind of love that feels safe, steady, and strong.
+
+May this birthday mark the beginning of a year where you never cry yourself to sleep. A year where your heart feels secure. A year where you don't chase love — love chases you. A year where Allah opens doors you never imagined and closes doors that were never meant for you.
+
+<span class="highlight">Advance Happy Birthday, Zanib 🤍✨</span>
+
+Even if I am not beside you next month, even if I am only a silent chapter in your story, just know this — somewhere in this world, someone raised his hands before your birthday even arrived and asked Allah to give you a life filled with dignity, deep love, endless peace, and happiness that never fades.
+
+And no matter where life takes us, my respect for you will remain, my prayers for you will continue, and my heart will always wish that you are loved the way you truly deserve — deeply, purely, and forever. 🤍
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Audio Controls -->
+    <div class="audio-controls">
+        <button class="audio-btn" id="playPauseBtn" title="Play/Pause Music">🎵</button>
+        <button class="audio-btn" id="restartBtn" title="Restart Music">🔄</button>
+        <button class="audio-btn" id="muteBtn" title="Mute/Unmute">🔊</button>
+    </div>
+
+    <!-- Background Music (using Audio.mp4 from music folder) -->
+    <audio id="bgMusic" loop>
+        <source src="music/Audio.mp4" type="audio/mp4">
+    </audio>
+
+    <!-- Cursor Trail -->
+    <div class="cursor-trail" id="cursorTrail">💖</div>
+
+    <script>
+        // Back button always goes to main.html - already set in HTML
+        
+        // Create floating particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Create stars
+        function createStars() {
+            const container = document.getElementById('stars');
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.animationDuration = (2 + Math.random() * 2) + 's';
+                container.appendChild(star);
+            }
+        }
+
+        // Create floating hearts
+        function createHearts() {
+            const container = document.getElementById('hearts');
+            const heartSymbols = ['💖', '💕', '💗', '🤍', '💜', '💘'];
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.fontSize = (15 + Math.random() * 15) + 'px';
+                heart.style.animationDelay = Math.random() * 12 + 's';
+                heart.style.animationDuration = (10 + Math.random() * 8) + 's';
+                container.appendChild(heart);
+            }
+        }
+
+        // Cursor trail effect
+        const cursorTrail = document.getElementById('cursorTrail');
+        document.addEventListener('mousemove', (e) => {
+            cursorTrail.style.left = e.clientX + 'px';
+            cursorTrail.style.top = e.clientY + 'px';
+        });
+
+        // Audio control
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const muteBtn = document.getElementById('muteBtn');
+        let isPlaying = false;
+        let isMuted = false;
+
+        // Auto play when page loads
+        window.addEventListener('load', () => {
+            // Try to play music
+            playMusic();
+        });
+
+        playPauseBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                pauseMusic();
+            } else {
+                playMusic();
+            }
+        });
+
+        // Restart music button
+        restartBtn.addEventListener('click', () => {
+            bgMusic.currentTime = 0;
+            if (!isPlaying) {
+                playMusic();
+            }
+        });
+
+        // Mute/Unmute button
+        muteBtn.addEventListener('click', () => {
+            if (isMuted) {
+                bgMusic.muted = false;
+                isMuted = false;
+                muteBtn.textContent = '🔊';
+            } else {
+                bgMusic.muted = true;
+                isMuted = true;
+                muteBtn.textContent = '🔇';
+            }
+        });
+
+        function playMusic() {
+            bgMusic.volume = 0.3;
+            bgMusic.play().then(() => {
+                isPlaying = true;
+                playPauseBtn.classList.add('playing');
+                playPauseBtn.textContent = '🔊';
+            }).catch(e => {
+                console.log('Audio play failed:', e);
+            });
+        }
+
+        function pauseMusic() {
+            bgMusic.pause();
+            isPlaying = false;
+            playPauseBtn.classList.remove('playing');
+            playPauseBtn.textContent = '🎵';
+        }
+
+        // API Base URL - change to your server URL
+        const API_URL = 'http://localhost:3000/api';
+        
+        // Track file view with detailed info
+        async function trackFileView(filename) {
+            let startTime = Date.now();
+            
+            // Send to server
+            try {
+                await fetch(API_URL + '/fileviews', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ filename: filename })
+                });
+            } catch (err) {
+                console.log('Server not available, using localStorage');
+            }
+            
+            // Also store in localStorage for fallback
+            let viewedFiles = [];
+            const saved = localStorage.getItem('viewedFiles');
+            if (saved) {
+                viewedFiles = JSON.parse(saved);
+            }
+
+            // Get device info
+            const deviceInfo = {
+                browser: navigator.userAgent.includes('Chrome') ? 'Chrome' : 
+                         navigator.userAgent.includes('Safari') ? 'Safari' : 
+                         navigator.userAgent.includes('Firefox') ? 'Firefox' : 'Other',
+                os: navigator.userAgent.includes('Windows') ? 'Windows' : 
+                    navigator.userAgent.includes('Mac') ? 'Mac' : 
+                    navigator.userAgent.includes('Android') ? 'Android' : 
+                    navigator.userAgent.includes('iPhone') ? 'iPhone' : 'Other',
+                screen: window.screen.width + 'x' + window.screen.height,
+                language: navigator.language
+            };
+
+            viewedFiles.push({
+                filename: filename,
+                timestamp: Date.now(),
+                enterTime: Date.now(),
+                timeSpent: 0,
+                deviceInfo: deviceInfo
+            });
+
+            localStorage.setItem('viewedFiles', JSON.stringify(viewedFiles));
+            
+            // Track page leave - update time spent
+            window.addEventListener('beforeunload', async function() {
+                const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+                try {
+                    await fetch(API_URL + '/fileviews', {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            filename: filename,
+                            timeSpent: timeSpent
+                        })
+                    });
+                } catch (err) {
+                    // Ignore errors
+                }
+            });
+        }
+
+        function updateTimeSpent(filename) {
+            let viewedFiles = [];
+            const saved = localStorage.getItem('viewedFiles');
+            if (saved) {
+                viewedFiles = JSON.parse(saved);
+            }
+            
+            // Find and update the most recent entry for this file
+            for (let i = viewedFiles.length - 1; i >= 0; i--) {
+                if (viewedFiles[i].filename === filename && viewedFiles[i].timeSpent === 0) {
+                    viewedFiles[i].timeSpent = Math.floor((Date.now() - viewedFiles[i].enterTime) / 1000);
+                    viewedFiles[i].leaveTime = Date.now();
+                    break;
+                }
+            }
+            
+            localStorage.setItem('viewedFiles', JSON.stringify(viewedFiles));
+        }
+
+        // Track video watch
+        function trackVideoWatch(videoName, watchTime) {
+            let watchedVideos = [];
+            const saved = localStorage.getItem('watchedVideos');
+            if (saved) {
+                watchedVideos = JSON.parse(saved);
+            }
+
+            watchedVideos.push({
+                videoname: videoName,
+                timestamp: Date.now(),
+                watchTime: watchTime
+            });
+
+            localStorage.setItem('watchedVideos', JSON.stringify(watchedVideos));
+        }
+
+        // Initialize effects
+        createParticles();
+        createStars();
+        createHearts();
+        
+        // Track file view on load
+        trackFileView('birthday.html');
+    </script>
+</body>
+</html>

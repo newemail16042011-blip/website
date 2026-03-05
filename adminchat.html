@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1a1a2e">
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <link rel="shortcut icon" type="image/png" href="../favicon.png">
+    <link rel="apple-touch-icon" href="../favicon.png">
+    <meta name="msapplication-TileImage" content="../favicon.png">
+    <title>Admin Chat - Eid Mubarak</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header h2 {
+            color: #fff;
+            font-size: 24px;
+        }
+
+        .sidebar-header p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-menu li {
+            margin-bottom: 10px;
+        }
+
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            background: rgba(233, 69, 96, 0.2);
+            color: #e94560;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            color: #fff;
+            font-size: 24px;
+        }
+
+        .back-btn {
+            padding: 8px 16px;
+            background: rgba(233, 69, 96, 0.2);
+            border: 1px solid #e94560;
+            border-radius: 8px;
+            color: #e94560;
+            cursor: pointer;
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 10px 14px;
+            border-radius: 16px;
+            font-size: 13px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .message.admin {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+            color: #fff;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.user {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message .sender {
+            font-size: 10px;
+            opacity: 0.8;
+            margin-bottom: 3px;
+        }
+
+        .message .time {
+            font-size: 9px;
+            opacity: 0.6;
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        .message .seen {
+            font-size: 9px;
+            color: #4ade80;
+            margin-top: 4px;
+        }
+
+        .message .delete-msg-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .message:hover .delete-msg-btn {
+            opacity: 1;
+        }
+
+        .message {
+            position: relative;
+        }
+
+        .message img {
+            max-width: 180px;
+            border-radius: 8px;
+            margin-top: 6px;
+            display: block;
+        }
+
+        .message .voice-message {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 6px 10px;
+            border-radius: 20px;
+            margin-top: 6px;
+        }
+
+        .message .voice-message .play-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #e94560;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            flex-shrink: 0;
+        }
+
+        .message .voice-message .waveform {
+            display: flex;
+            align-items: center;
+            gap: 1px;
+            height: 16px;
+        }
+
+        .message .voice-message .waveform span {
+            width: 2px;
+            background: #e94560;
+            border-radius: 1px;
+        }
+
+        .no-messages {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            padding: 30px;
+        }
+
+        .chat-input-container {
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .chat-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .chat-input:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #e94560;
+        }
+
+        .icon-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .icon-btn:hover {
+            background: rgba(233, 69, 96, 0.3);
+        }
+
+        .icon-btn.recording {
+            background: #dc3545;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .send-btn {
+            padding: 10px 18px;
+            background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+            border: none;
+            border-radius: 25px;
+            color: #fff;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        #imageInput {
+            display: none;
+        }
+
+        .recording-timer {
+            color: #dc3545;
+            font-size: 12px;
+            text-align: center;
+            display: none;
+        }
+
+        .recording-timer.active {
+            display: block;
+        }
+
+        .online-users {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+
+        .online-users h3 {
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .online-users .count {
+            background: #28a745;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 11px;
+        }
+
+        .users-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .user-badge {
+            background: rgba(40, 167, 69, 0.2);
+            border: 1px solid #28a745;
+            color: #28a745;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .message {
+                max-width: 85%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h2>Admin Panel</h2>
+            <p>Eid Mubarak</p>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="admin.html">📊 Dashboard</a></li>
+            <li><a href="adminchat.html" class="active">💬 Chat</a></li>
+            <li><a href="../index.html">🌙 View Site</a></li>
+            <li><a href="#" onclick="logout()">🚪 Logout</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <div class="header">
+            <h1>💬 Admin Chat</h1>
+            <a href="admin.html" class="back-btn">← Back</a>
+        </div>
+
+        <div class="online-users">
+            <h3>Online Users <span class="count" id="onlineCount">0</span></h3>
+            <div class="users-list" id="usersList">
+                <span style="color: rgba(255,255,255,0.5); font-size: 12px;">No users online</span>
+            </div>
+        </div>
+
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+                <div class="no-messages">
+                    <p>Connecting to chat...</p>
+                </div>
+            </div>
+            <div class="chat-input-container">
+                <div class="recording-timer" id="recordingTimer">Recording... 0s</div>
+                <div class="input-row">
+                    <button class="icon-btn" onclick="document.getElementById('imageInput').click()" title="Send Image">📷</button>
+                    <input type="file" id="imageInput" accept="image/*" onchange="sendImage()">
+                    
+                    <button class="icon-btn" id="voiceBtn" onmousedown="startRecording()" onmouseup="stopRecording()" ontouchstart="startRecording()" ontouchend="stopRecording()" title="Hold to Record">🎤</button>
+                    
+                    <input type="text" class="chat-input" id="messageInput" placeholder="Type message..." onkeypress="handleKeyPress(event)">
+                    
+                    <button class="send-btn" onclick="sendMessage()">
+                        <span>Send</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const usersList = document.getElementById('usersList');
+        const onlineCount = document.getElementById('onlineCount');
+        const voiceBtn = document.getElementById('voiceBtn');
+        const recordingTimer = document.getElementById('recordingTimer');
+
+        let messages = [];
+        let onlineUsers = [];
+        let lastMessageCount = 0;
+        let mediaRecorder;
+        let audioChunks = [];
+        let recordingInterval;
+        let recordingSeconds = 0;
+
+        function loadOnlineUsers() {
+            try {
+                onlineUsers = JSON.parse(localStorage.getItem('onlineUsers')) || [];
+            } catch (e) {
+                onlineUsers = [];
+            }
+        }
+
+        async function markMessagesAsSeen() {
+            try {
+                await fetch(API_URL + '/messages/seen', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+            } catch (err) {
+                console.log('Could not mark messages as seen');
+            }
+        }
+
+        async function displayMessages() {
+            try {
+                const response = await fetch(API_URL + '/messages');
+                if (response.ok) {
+                    const serverMessages = await response.json();
+                    if (serverMessages.length !== lastMessageCount) {
+                        messages = serverMessages;
+                        lastMessageCount = messages.length;
+                        renderMessages();
+                        markMessagesAsSeen();
+                    }
+                }
+            } catch (err) {
+                console.log('Using local messages');
+                try {
+                    messages = JSON.parse(localStorage.getItem('adminChatMessages')) || [];
+                    renderMessages();
+                } catch (e) {}
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function renderMessages() {
+            chatMessages.innerHTML = '';
+            
+            if (!messages || messages.length === 0) {
+                chatMessages.innerHTML = '<div class="no-messages"><p>No messages yet. Start the conversation!</p></div>';
+                return;
+            }
+            
+            messages.forEach(function(msg) {
+                const messageDiv = document.createElement('div');
+                const isAdmin = msg.sender === 'Admin' || msg.type === 'admin';
+                messageDiv.className = 'message ' + (isAdmin ? 'admin' : 'user');
+                
+                let messageContent = '';
+                
+                // Handle text
+                if (msg.text && msg.text !== '[Image]' && msg.text !== '[Voice Message]') {
+                    messageContent = escapeHtml(msg.text);
+                }
+                
+                // Handle image
+                if (msg.image) {
+                    messageContent += '<br><img src="' + msg.image + '" alt="Image">';
+                }
+                
+                // Handle voice
+                if (msg.voice) {
+                    messageContent += '<div class="voice-message"><button class="play-btn" onclick="playAudio(this, \'' + msg.voice + '\')">▶</button><div class="waveform"><span></span><span></span><span></span><span></span><span></span></div></div>';
+                }
+                
+                const seenStatus = msg.seen ? '<div class="seen">✓ Seen</div>' : '';
+                const timestamp = msg.timestamp || (msg.time ? new Date(msg.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '');
+                const deleteBtn = '<button class="delete-msg-btn" onclick="deleteMessage(' + msg.id + ')">🗑️</button>';
+                
+                messageDiv.innerHTML = deleteBtn + '<div class="sender">' + escapeHtml(msg.sender || 'User') + '</div><div class="text">' + messageContent + '</div><div class="time">' + timestamp + '</div>' + seenStatus;
+                
+                chatMessages.appendChild(messageDiv);
+            });
+            
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        async function deleteMessage(id) {
+            if (!confirm('Delete this message?')) return;
+            
+            // Remove from local array
+            messages = messages.filter(msg => msg.id !== id);
+            renderMessages();
+            
+            // Delete from server
+            try {
+                await fetch(API_URL + '/messages/' + id, {
+                    method: 'DELETE'
+                });
+            } catch (err) {
+                console.log('Could not delete from server');
+            }
+        }
+
+        function playAudio(btn, audioData) {
+            const audio = new Audio(audioData);
+            audio.play();
+            btn.textContent = '⏸';
+            audio.onended = function() {
+                btn.textContent = '▶';
+            };
+        }
+
+        function displayOnlineUsers() {
+            loadOnlineUsers();
+            onlineCount.textContent = onlineUsers.length;
+            
+            if (onlineUsers.length === 0) {
+                usersList.innerHTML = '<span style="color: rgba(255,255,255,0.5); font-size: 12px;">No users online</span>';
+                return;
+            }
+            
+            usersList.innerHTML = '';
+            onlineUsers.forEach(function(user) {
+                const userBadge = document.createElement('span');
+                userBadge.className = 'user-badge';
+                userBadge.textContent = user.name || 'User';
+                usersList.appendChild(userBadge);
+            });
+        }
+
+        async function sendMessage() {
+            const text = messageInput.value.trim();
+            if (!text) return;
+
+            const message = {
+                sender: 'Admin',
+                text: text,
+                type: 'admin',
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                seen: true
+            };
+
+            messages.push(message);
+            renderMessages();
+            
+            try {
+                localStorage.setItem('adminChatMessages', JSON.stringify(messages));
+            } catch (e) {}
+
+            try {
+                await fetch(API_URL + '/messages', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(message)
+                });
+            } catch (err) {}
+            
+            messageInput.value = '';
+        }
+
+        async function sendImage() {
+            const input = document.getElementById('imageInput');
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const imageData = e.target.result;
+                
+                const message = {
+                    sender: 'Admin',
+                    text: '[Image]',
+                    image: imageData,
+                    type: 'admin',
+                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    seen: true
+                };
+                
+                messages.push(message);
+                renderMessages();
+                input.value = '';
+
+                try {
+                    await fetch(API_URL + '/messages', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(message)
+                    });
+                } catch (err) {}
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                
+                mediaRecorder.ondataavailable = function(e) {
+                    audioChunks.push(e.data);
+                };
+                
+                mediaRecorder.onstop = async function() {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const reader = new FileReader();
+                    reader.onload = async function(e) {
+                        const audioData = e.target.result;
+                        
+                        const message = {
+                            sender: 'Admin',
+                            text: '[Voice Message]',
+                            voice: audioData,
+                            type: 'admin',
+                            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                            seen: true
+                        };
+                        
+                        messages.push(message);
+                        renderMessages();
+
+                        try {
+                            await fetch(API_URL + '/messages', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(message)
+                            });
+                        } catch (err) {}
+                    };
+                    reader.readAsDataURL(audioBlob);
+                };
+                
+                mediaRecorder.start();
+                voiceBtn.classList.add('recording');
+                recordingTimer.classList.add('active');
+                recordingSeconds = 0;
+                recordingTimer.textContent = 'Recording... 0s';
+                
+                recordingInterval = setInterval(function() {
+                    recordingSeconds++;
+                    recordingTimer.textContent = 'Recording... ' + recordingSeconds + 's';
+                }, 1000);
+                
+            } catch (err) {
+                console.log('Could not start recording: ' + err);
+                alert('Microphone access required for voice messages');
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                voiceBtn.classList.remove('recording');
+                recordingTimer.classList.remove('active');
+                clearInterval(recordingInterval);
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = 'login.html';
+            }
+        }
+
+        setInterval(function() {
+            displayMessages();
+            displayOnlineUsers();
+        }, 3000);
+
+        displayMessages();
+        displayOnlineUsers();
+    </script>
+</body>
+</html>

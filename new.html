@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a0a1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Eid Mubarak">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <meta name="msapplication-TileImage" content="favicon.png">
+    <title>For You - Eid Mubarak</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a0a1a 0%, #2d1f3d 50%, #1a0a1a 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            position: relative;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: none;
+        }
+
+        /* Prevent horizontal scroll */
+        html {
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+
+        /* Floating Hearts Background */
+        .hearts-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .floating-heart {
+            position: absolute;
+            color: rgba(255, 105, 180, 0.4);
+            font-size: 20px;
+            animation: floatUp 8s ease-in-out infinite;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Stars */
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: var(--min-opacity); transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Back Button */
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            padding: 12px 25px;
+            font-size: 16px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 25px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+            backdrop-filter: blur(10px);
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.2));
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Container */
+        .container {
+            text-align: center;
+            color: white;
+            z-index: 10;
+            padding: 80px 20px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Title */
+        h1 {
+            font-size: clamp(24px, 6vw, 42px);
+            background: linear-gradient(135deg, #ff69b4, #ffd700, #ff69b4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+            margin-bottom: 10px;
+            animation: fadeInDown 1s ease, glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 10px rgba(255, 105, 180, 0.5)); }
+            to { filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.7)); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Romantic Subtitle */
+        .subtitle {
+            font-size: clamp(14px, 3vw, 18px);
+            color: rgba(255, 182, 193, 0.9);
+            margin-bottom: 30px;
+            font-style: italic;
+            animation: fadeIn 1.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Video Section - Top - Horizontal Row */
+        .video-section {
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .top-line {
+            color: #d4a5a5;
+            font-size: clamp(13px, 2.5vw, 16px);
+            margin-bottom: 20px;
+            text-align: center;
+            font-style: italic;
+            line-height: 1.8;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, rgba(212, 165, 165, 0.15) 0%, rgba(180, 100, 100, 0.1) 100%);
+            border-radius: 15px;
+            border: 1px solid rgba(212, 165, 165, 0.3);
+            text-shadow: 0 0 10px rgba(212, 165, 165, 0.3);
+            animation: fadeIn 1s ease;
+            max-width: 600px;
+        }
+
+        /* Close Video Section Button */
+        .close-video-btn {
+            display: inline-block;
+            padding: 8px 20px;
+            margin-top: 15px;
+            font-size: 14px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+            backdrop-filter: blur(10px);
+        }
+
+        .close-video-btn:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.2));
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .video-cards-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .video-card {
+            background: linear-gradient(160deg, rgba(255, 182, 193, 0.15) 0%, rgba(255, 105, 180, 0.08) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 105, 180, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 105, 180, 0.15);
+            padding: 10px;
+            flex: 0 0 auto;
+            width: 180px;
+            animation: fadeInUp 1s ease both;
+        }
+
+        .video-card:nth-child(1) { animation-delay: 0.2s; }
+        .video-card:nth-child(2) { animation-delay: 0.4s; }
+        .video-card:nth-child(3) { animation-delay: 0.6s; }
+        .video-card:nth-child(4) { animation-delay: 0.8s; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .video-card h3 {
+            color: #ffb6c1;
+            font-size: clamp(12px, 2.5vw, 14px);
+            margin-bottom: 8px;
+            text-shadow: 0 0 10px rgba(255, 182, 193, 0.5);
+        }
+
+        .video-card video {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            background: #000;
+            border: 1px solid rgba(255, 105, 180, 0.3);
+        }
+
+        /* Message Card */
+        .message-card {
+            background: linear-gradient(160deg, rgba(255, 182, 193, 0.15) 0%, rgba(255, 105, 180, 0.08) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 105, 180, 0.3);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 0 30px rgba(255, 105, 180, 0.2);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px 25px;
+            animation: fadeInUp 1s ease 0.5s both;
+        }
+
+        .message-card p {
+            font-size: clamp(14px, 2.5vw, 17px);
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 2;
+            text-align: center;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .message-card .signature {
+            font-size: clamp(18px, 4vw, 24px);
+            background: linear-gradient(135deg, #ff69b4, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 30px;
+            text-shadow: none;
+        }
+
+        /* Hearts Animation */
+        .heart {
+            color: #ff69b4;
+            font-size: 32px;
+            margin-top: 20px;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.15); }
+        }
+
+        /* Romantic Quote Box */
+        .quote-box {
+            text-align: center;
+            padding: 25px 20px;
+            background: linear-gradient(135deg, rgba(255, 105, 180, 0.15) 0%, rgba(199, 21, 133, 0.08) 100%);
+            border-radius: 16px;
+            margin: 25px 0;
+            border: 1px solid rgba(255, 105, 180, 0.4);
+            position: relative;
+        }
+
+        .quote-box::before,
+        .quote-box::after {
+            content: '💕';
+            position: absolute;
+            font-size: 20px;
+        }
+
+        .quote-box::before {
+            top: 10px;
+            left: 15px;
+        }
+
+        .quote-box::after {
+            bottom: 10px;
+            right: 15px;
+        }
+
+        .quote-box p {
+            font-size: clamp(13px, 2.5vw, 16px);
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.9;
+            margin-bottom: 0;
+        }
+
+        /* Dua Box */
+        .dua-box {
+            text-align: center;
+            padding: 25px 20px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 105, 180, 0.05) 100%);
+            border-radius: 16px;
+            margin: 25px 0;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .dua-box p {
+            font-size: clamp(13px, 2.5vw, 16px);
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.9;
+            margin-bottom: 0;
+        }
+
+        /* Mobile Responsive */
+        @media screen and (min-width: 768px) {
+            h1 {
+                font-size: 48px;
+            }
+            
+            .message-card {
+                padding: 50px 40px;
+            }
+            
+            .video-card {
+                width: 220px;
+                padding: 12px;
+            }
+            
+            .video-card video {
+                height: 150px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .video-card {
+                width: 150px;
+                padding: 8px;
+            }
+            
+            .video-card video {
+                height: 100px;
+            }
+        }
+
+        /* Left Side Envelope Option */
+        .left-envelope-section {
+            position: fixed;
+            top: 8%;
+            left: 8%;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            animation: fadeInLeft 1s ease-out 0.5s both;
+        }
+
+        .left-envelope-section:active {
+            transform: scale(0.95);
+        }
+
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .envelope-icon {
+            font-size: clamp(40px, 10vw, 60px);
+            animation: envelope-bounce 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px rgba(255, 105, 180, 0.5));
+        }
+
+        @keyframes envelope-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .envelope-text {
+            margin-top: 8px;
+            color: rgba(255, 182, 193, 0.9);
+            font-size: clamp(12px, 2.5vw, 14px);
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+            animation: pulse-click 2s ease-in-out infinite;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        @keyframes pulse-click {
+            0%, 100% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        /* Fullscreen Video Modal */
+        .video-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .video-modal.active {
+            display: flex;
+        }
+
+        .video-modal video {
+            max-width: 90%;
+            max-height: 80%;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(255, 105, 180, 0.5);
+        }
+
+        .video-modal.half-screen video {
+            max-width: 50%;
+            max-height: 80%;
+        }
+
+        .video-modal-controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .modal-btn {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, rgba(255, 105, 180, 0.3), rgba(255, 105, 180, 0.1));
+            border: 1px solid rgba(255, 105, 180, 0.5);
+            border-radius: 25px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn:hover {
+            background: linear-gradient(135deg, rgba(255, 105, 180, 0.5), rgba(255, 105, 180, 0.3));
+            transform: scale(1.05);
+        }
+
+        .close-modal-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+            background: rgba(255, 105, 180, 0.3);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-modal-btn:hover {
+            background: rgba(255, 105, 180, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Hearts -->
+    <div class="hearts-container" id="hearts"></div>
+    
+    <!-- Stars -->
+    <div class="stars-container" id="stars"></div>
+
+    <!-- Back Button -->
+    <a href="main.html" class="back-btn">← Back</a>
+
+    <div class="container">
+        <h1>💕 For You 💕</h1>
+        <p class="subtitle">A message from the heart...</p>
+        
+        <!-- Video Section - Top -->
+        <div class="video-section">
+            <p class="top-line">I'm saying sorry even before I speak, because I know I may not have any place in your life anymore. I know you're not mine now — you belong to someone else, and I respect that. Maybe my words don't matter to you anymore, and maybe I don't either. But please believe me, my intentions were never wrong. Whatever I say comes from sincerity, respect, and a heart that never meant to hurt you. 💔</p>
+            <div class="video-cards-row">
+                <div class="video-card">
+                    <h3>🎬 Video 1</h3>
+                    <video controls playsinline>
+                        <source src="videos/Video1.mp4" type="video/mp4">
+                    </video>
+                </div>
+                
+                <div class="video-card">
+                    <h3>🎬 Video 2</h3>
+                    <video controls playsinline>
+                        <source src="videos/Video2.mp4" type="video/mp4">
+                    </video>
+                </div>
+                
+                <div class="video-card">
+                    <h3>🎬 Video 3</h3>
+                    <video controls playsinline>
+                        <source src="videos/Video3.mp4" type="video/mp4">
+                    </video>
+                </div>
+                
+                <div class="video-card">
+                    <h3>🎬 Video 4</h3>
+                    <video controls playsinline>
+                        <source src="videos/Video4.mp4" type="video/mp4">
+                    </video>
+                </div>
+                
+                <div class="video-card">
+                    <h3>🎬 Video 5</h3>
+                    <video controls playsinline>
+                        <source src="videos/Video5.mp4" type="video/mp4">
+                    </video>
+                </div>
+                
+                <div class="video-card">
+                    <h3>🎬 Video 6</h3>
+                    <video controls playsinline>
+                        <source src="videos/Video6.mp4" type="video/mp4">
+                    </video>
+                </div>
+                
+                <div class="video-card">
+                    <h3>🎬 Video 7</h3>
+                    <video controls playsinline>
+                        <source src="videos/Video7.mp4" type="video/mp4">
+                    </video>
+                </div>
+                
+                <div class="video-card">
+                    <h3>🎬 Video 8</h3>
+                    <video controls playsinline>
+                        <source src="videos/Video8.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Message Card -->
+        <div class="message-card">
+            <p>My love,</p>
+            
+            <p>Today, I don't know where life has taken you, and I don't know what distance or time has written between us. But what I do know is that my heart still carries your name in the softest corner of it. Even if you are not by my side right now, my feelings for you have never changed. They have only grown deeper, calmer, and more sincere.</p>
+            
+            <p>I want to start by saying sorry. Sorry for the mistakes I made. Sorry for the moments I failed to understand you. Sorry for the times my silence hurt you or my words were not enough. If I could go back and fix even one thing that caused you pain, I would do it without thinking twice.</p>
+            
+            <div class="quote-box">
+                <p>You may not be with me today, but my love for you still stands where it always did — pure and loyal. Loving you was never a temporary feeling for me. It was not just emotions; it was intention. It was prayer. It was a promise my heart made without even speaking.</p>
+            </div>
+            
+            <p>I make countless duas for you every day. I pray that Allah fills your life with peace, happiness, and success. I pray that your heart never feels loneliness. I pray that your tears turn into smiles and your struggles turn into victories.</p>
+            
+            <div class="dua-box">
+                <p>May every door that closes for you be replaced with something better. May your path always be protected from harm. May your dreams come true in ways even more beautiful than you imagine. 🤲</p>
+            </div>
+            
+            <p>Even if destiny keeps us apart for now, my prayers will never stop reaching for you. I ask Allah to heal whatever is broken between us, to remove misunderstandings, and to bring clarity where there was confusion.</p>
+            
+            <p>I want you to know something very honestly: my feelings are not a burden on you. They are simply a truth inside me. I do not want to pressure you or hold you back from your life. I just want you to know that somewhere in this world, there is a heart that still beats with sincere love and pure intentions for you.</p>
+            
+            <div class="quote-box">
+                <p>And yes… I will wait. Not in a way that stops my life, but in a way that keeps hope alive. I will wait with patience, with dignity, and with faith. Until my last breath, a part of me will always believe that if you are meant for me, you will find your way back.</p>
+            </div>
+            
+            <p>You were never just a chapter in my life. You were a lesson, a blessing, and a prayer I once held in my hands. No matter what happens, I will always respect you, protect your name, and wish the best for you.</p>
+            
+            <div class="dua-box">
+                <p>May Allah guide you, protect you, and surround you with people who treat you gently. May your heart always feel safe. And if one day our paths cross again, I hope we meet not with pain, but with understanding and peace.</p>
+            </div>
+            
+            <p class="signature">My prayers are with you.<br>My respect is with you.<br>And my love… quietly, sincerely, still belongs to you. 🤍</p>
+            
+            <div class="heart">💖💕💖</div>
+        </div>
+    </div>
+
+    <!-- Fullscreen Video Modal -->
+    <div class="video-modal" id="videoModal">
+        <button class="close-modal-btn" id="closeModalBtn">✕</button>
+        <video id="modalVideo" controls>
+            <source src="" type="video/mp4">
+        </video>
+        <div class="video-modal-controls">
+            <button class="modal-btn" id="halfScreenBtn">📱 Half Screen</button>
+            <button class="modal-btn" id="fullScreenBtn">📺 Full Screen</button>
+        </div>
+    </div>
+
+    <script>
+        // Create floating hearts
+        function createHearts() {
+            const container = document.getElementById('hearts');
+            const heartCount = window.innerWidth < 480 ? 15 : 25;
+            
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'floating-heart';
+                heart.innerHTML = ['💕', '💖', '💗', '💘', '❤️', '💝'][Math.floor(Math.random() * 6)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDelay = Math.random() * 8 + 's';
+                heart.style.animationDuration = (Math.random() * 4 + 6) + 's';
+                heart.style.fontSize = (Math.random() * 15 + 15) + 'px';
+                container.appendChild(heart);
+            }
+        }
+
+        // Create stars
+        function createStars() {
+            const container = document.getElementById('stars');
+            const starCount = window.innerWidth < 480 ? 100 : 150;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                const size = Math.random() * 2 + 1;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                
+                const duration = Math.random() * 3 + 2;
+                star.style.setProperty('--duration', duration + 's');
+                star.style.setProperty('--min-opacity', Math.random() * 0.3 + 0.2);
+                
+                star.style.animationDelay = Math.random() * 3 + 's';
+                
+                container.appendChild(star);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createHearts();
+            createStars();
+            initVideoModal();
+            trackFileView('new.html');
+        });
+
+        // Track file view with detailed info
+        function trackFileView(filename) {
+            let viewedFiles = [];
+            const saved = localStorage.getItem('viewedFiles');
+            if (saved) {
+                viewedFiles = JSON.parse(saved);
+            }
+
+            // Get device info
+            const deviceInfo = {
+                browser: navigator.userAgent.includes('Chrome') ? 'Chrome' : 
+                         navigator.userAgent.includes('Safari') ? 'Safari' : 
+                         navigator.userAgent.includes('Firefox') ? 'Firefox' : 'Other',
+                os: navigator.userAgent.includes('Windows') ? 'Windows' : 
+                    navigator.userAgent.includes('Mac') ? 'Mac' : 
+                    navigator.userAgent.includes('Android') ? 'Android' : 
+                    navigator.userAgent.includes('iPhone') ? 'iPhone' : 'Other',
+                screen: window.screen.width + 'x' + window.screen.height,
+                language: navigator.language
+            };
+
+            viewedFiles.push({
+                filename: filename,
+                timestamp: Date.now(),
+                enterTime: Date.now(),
+                timeSpent: 0,
+                deviceInfo: deviceInfo
+            });
+
+            localStorage.setItem('viewedFiles', JSON.stringify(viewedFiles));
+            
+            // Track page leave
+            window.addEventListener('beforeunload', function() {
+                updateTimeSpent(filename);
+            });
+        }
+
+        function updateTimeSpent(filename) {
+            let viewedFiles = [];
+            const saved = localStorage.getItem('viewedFiles');
+            if (saved) {
+                viewedFiles = JSON.parse(saved);
+            }
+            
+            // Find and update the most recent entry for this file
+            for (let i = viewedFiles.length - 1; i >= 0; i--) {
+                if (viewedFiles[i].filename === filename && viewedFiles[i].timeSpent === 0) {
+                    viewedFiles[i].timeSpent = Math.floor((Date.now() - viewedFiles[i].enterTime) / 1000);
+                    viewedFiles[i].leaveTime = Date.now();
+                    break;
+                }
+            }
+            
+            localStorage.setItem('viewedFiles', JSON.stringify(viewedFiles));
+        }
+
+        // Track video watch
+        function trackVideoWatch(videoName, watchTime) {
+            let watchedVideos = [];
+            const saved = localStorage.getItem('watchedVideos');
+            if (saved) {
+                watchedVideos = JSON.parse(saved);
+            }
+
+            watchedVideos.push({
+                videoname: videoName,
+                timestamp: Date.now(),
+                watchTime: watchTime
+            });
+
+            localStorage.setItem('watchedVideos', JSON.stringify(watchedVideos));
+        }
+
+        // Video Modal Functionality
+        function initVideoModal() {
+            const modal = document.getElementById('videoModal');
+            const modalVideo = document.getElementById('modalVideo');
+            const closeBtn = document.getElementById('closeModalBtn');
+            const halfScreenBtn = document.getElementById('halfScreenBtn');
+            const fullScreenBtn = document.getElementById('fullScreenBtn');
+            const videoCards = document.querySelectorAll('.video-card video');
+            let currentVideo = null;
+            let videoStartTime = 0;
+
+            // Add click event to all videos
+            videoCards.forEach(video => {
+                video.addEventListener('click', function(e) {
+                    // Pause all other videos
+                    videoCards.forEach(v => {
+                        if (v !== video) {
+                            v.pause();
+                        }
+                    });
+
+                    // Get the video source
+                    const source = video.querySelector('source').src;
+                    modalVideo.src = source;
+                    
+                    // Show modal
+                    modal.classList.add('active');
+                    
+                    // Play video in modal
+                    modalVideo.play();
+                    currentVideo = video;
+                    videoStartTime = Date.now();
+                });
+            });
+
+            // Track when modal video is played
+            modalVideo.addEventListener('play', () => {
+                videoStartTime = Date.now();
+            });
+
+            // Track when modal video is paused
+            modalVideo.addEventListener('pause', () => {
+                const watchTime = Math.floor((Date.now() - videoStartTime) / 1000);
+                if (watchTime > 5 && modalVideo.src) {
+                    const videoName = modalVideo.src.split('/').pop().split('?')[0];
+                    trackVideoWatch(videoName, watchTime);
+                }
+            });
+
+            // Track when modal video ends
+            modalVideo.addEventListener('ended', () => {
+                const watchTime = Math.floor((Date.now() - videoStartTime) / 1000);
+                if (watchTime > 5 && modalVideo.src) {
+                    const videoName = modalVideo.src.split('/').pop().split('?')[0];
+                    trackVideoWatch(videoName, watchTime);
+                }
+            });
+
+            // Close modal
+            closeBtn.addEventListener('click', function() {
+                modal.classList.remove('active');
+                modalVideo.pause();
+                modalVideo.src = '';
+            });
+
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                    modalVideo.pause();
+                    modalVideo.src = '';
+                }
+            });
+
+            // Half screen mode
+            halfScreenBtn.addEventListener('click', function() {
+                modal.classList.toggle('half-screen');
+                if (modal.classList.contains('half-screen')) {
+                    halfScreenBtn.textContent = '📱 Full Width';
+                } else {
+                    halfScreenBtn.textContent = '📱 Half Screen';
+                }
+            });
+
+            // Full screen mode
+            fullScreenBtn.addEventListener('click', function() {
+                if (modalVideo.requestFullscreen) {
+                    modalVideo.requestFullscreen();
+                } else if (modalVideo.webkitRequestFullscreen) {
+                    modalVideo.webkitRequestFullscreen();
+                } else if (modalVideo.msRequestFullscreen) {
+                    modalVideo.msRequestFullscreen();
+                }
+            });
+        }
+        
+        // API Base URL - change to your server URL
+        const API_URL = 'http://localhost:3000/api';
+        let startTime = Date.now();
+        
+        // Track file view
+        async function trackFileView(filename) {
+            try {
+                await fetch(API_URL + '/fileviews', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ filename: filename })
+                });
+            } catch (err) {
+                // Fallback to localStorage
+                let viewedFiles = [];
+                const saved = localStorage.getItem('viewedFiles');
+                if (saved) {
+                    viewedFiles = JSON.parse(saved);
+                }
+                viewedFiles.push({
+                    filename: filename,
+                    timestamp: Date.now(),
+                    timeSpent: 0
+                });
+                localStorage.setItem('viewedFiles', JSON.stringify(viewedFiles));
+            }
+        }
+        
+        // Track time spent when leaving
+        window.addEventListener('beforeunload', async function() {
+            const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+            try {
+                await fetch(API_URL + '/fileviews', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        filename: 'new.html',
+                        timeSpent: timeSpent
+                    })
+                });
+            } catch (err) {
+                // Ignore errors on unload
+            }
+        });
+        
+        // Track file view on page load
+        trackFileView('new.html');
+    </script>
+</body>
+</html>

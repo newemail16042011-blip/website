@@ -1,0 +1,12 @@
+{
+  "name": "eid-mubarak-backend",
+  "version": "1.0.0",
+  "description": "Simple backend for Eid Mubarak website",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": ["eid", "mubarak", "website"],
+  "author": "",
+  "license": "ISC"
+}

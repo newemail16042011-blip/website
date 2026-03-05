@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>Permissions - Eid Mubarak</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .header h1 {
+            color: #fff;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+
+        .permissions-container {
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .permission-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .permission-card h2 {
+            color: #fff;
+            font-size: 18px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .permission-card p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .permission-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px 20px;
+            border-radius: 10px;
+        }
+
+        .permission-toggle span {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.2);
+            transition: 0.3s;
+            border-radius: 30px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background: linear-gradient(135deg, #e94560, #ff6b6b);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(30px);
+        }
+
+        .album-upload {
+            margin-top: 20px;
+        }
+
+        .album-upload label {
+            display: block;
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #e94560, #ff6b6b);
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            font-size: 14px;
+            transition: transform 0.3s;
+        }
+
+        .album-upload label:hover {
+            transform: scale(1.02);
+        }
+
+        .album-upload input {
+            display: none;
+        }
+
+        .album-preview {
+            margin-top: 15px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .album-preview img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .album-preview .remove {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(244, 67, 54, 0.9);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .album-preview .preview-item {
+            position: relative;
+        }
+
+        .uploaded-count {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 12px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .video-upload {
+            margin-top: 15px;
+        }
+
+        .video-upload label {
+            display: block;
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #9c27b0, #ba68c8);
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            font-size: 14px;
+            transition: transform 0.3s;
+        }
+
+        .video-upload label:hover {
+            transform: scale(1.02);
+        }
+
+        .video-upload input {
+            display: none;
+        }
+
+        .video-preview {
+            margin-top: 15px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .video-preview video {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .video-preview .preview-item {
+            position: relative;
+        }
+
+        .voice-section {
+            margin-top: 20px;
+        }
+
+        .voice-section button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #2196f3, #64b5f6);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .voice-section button.active {
+            background: linear-gradient(135deg, #f44336, #ff5252);
+        }
+
+        .voice-section button:disabled {
+            background: rgba(255, 255, 255, 0.2);
+            cursor: not-allowed;
+        }
+
+        .voice-status {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        .status-message {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .status-message.success {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+            border: 1px solid #4caf50;
+        }
+
+        .status-message.error {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+            border: 1px solid #f44336;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .back-link a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 10px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔐 Permissions</h1>
+        <p>Control admin access to your album and microphone</p>
+    </div>
+
+    <div class="permissions-container">
+        <div id="statusMessage" style="display: none;"></div>
+
+        <!-- Album Permission Card -->
+        <div class="permission-card">
+            <h2>📸 Album Access</h2>
+            <p>Grant permission to admin to view your photo album. When enabled, all your uploaded photos will be visible to admin.</p>
+            
+            <div class="permission-toggle">
+                <span>Allow admin to view album</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="albumToggle" onchange="toggleAlbumPermission()">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div class="album-upload">
+                <label for="albumInput">
+                    📷 Add Photos to Album
+                </label>
+                <input type="file" id="albumInput" accept="image/*" multiple onchange="handleAlbumUpload(event)">
+                <div class="album-preview" id="albumPreview"></div>
+                <p class="uploaded-count" id="uploadedCount"></p>
+            </div>
+
+            <div class="video-upload">
+                <label for="videoInput">
+                    🎬 Add Videos to Album
+                </label>
+                <input type="file" id="videoInput" accept="video/*" multiple onchange="handleVideoUpload(event)">
+                <div class="video-preview" id="videoPreview"></div>
+                <p class="uploaded-count" id="videoCount"></p>
+            </div>
+        </div>
+
+        <!-- Microphone Permission Card -->
+        <div class="permission-card">
+            <h2>🎤 Microphone Access</h2>
+            <p>Grant microphone permission to admin. When enabled, admin can hear your voice in real-time and record voice messages.</p>
+            
+            <div class="permission-toggle">
+                <span>Allow admin to access microphone</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="micToggle" onchange="toggleMicPermission()">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div class="voice-section">
+                <button id="micBtn" onclick="toggleMicStream()" disabled>
+                    🎤 Start Voice Stream
+                </button>
+                <p class="voice-status" id="voiceStatus">Enable microphone permission first</p>
+            </div>
+        </div>
+
+        <div class="back-link">
+            <a href="chat.html">← Back to Chat</a>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        let albumImages = [];
+        let albumVideos = [];
+        let micStream = null;
+
+        // Load current permissions on page load
+        async function loadPermissions() {
+            try {
+                const response = await fetch(`${API_URL}/permissions`);
+                const data = await response.json();
+                
+                document.getElementById('albumToggle').checked = data.albumAccess || false;
+                document.getElementById('micToggle').checked = data.voiceAccess || false;
+                
+                // Load existing album
+                loadUserAlbum();
+            } catch (err) {
+                console.error('Error loading permissions:', err);
+            }
+        }
+
+        // Toggle album permission
+        async function toggleAlbumPermission() {
+            const granted = document.getElementById('albumToggle').checked;
+            
+            try {
+                const response = await fetch(`${API_URL}/permissions/album`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ grant: granted })
+                });
+                
+                const data = await response.json();
+                showStatus(granted ? 'Album access granted to admin!' : 'Album access revoked.', 'success');
+                
+                // Upload any pending images and videos
+                if (granted) {
+                    if (albumImages.length > 0) {
+                        await uploadAllImages();
+                    }
+                    if (albumVideos.length > 0) {
+                        await uploadAllVideos();
+                    }
+                }
+            } catch (err) {
+                showStatus('Error updating permission', 'error');
+                console.error(err);
+            }
+        }
+
+        // Toggle microphone permission
+        async function toggleMicPermission() {
+            const granted = document.getElementById('micToggle').checked;
+            
+            try {
+                const response = await fetch(`${API_URL}/permissions/voice`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ grant: granted })
+                });
+                
+                const data = await response.json();
+                
+                document.getElementById('micBtn').disabled = !granted;
+                document.getElementById('voiceStatus').textContent = granted 
+                    ? 'Mic enabled. Click button to start streaming.'
+                    : 'Enable microphone permission first';
+                
+                showStatus(granted ? 'Microphone access granted to admin!' : 'Microphone access revoked.', 'success');
+            } catch (err) {
+                showStatus('Error updating permission', 'error');
+                console.error(err);
+            }
+        }
+
+        // Handle album image upload
+        function handleAlbumUpload(event) {
+            const files = event.target.files;
+            const preview = document.getElementById('albumPreview');
+            
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    albumImages.push(e.target.result);
+                    updateAlbumPreview();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function updateAlbumPreview() {
+            const preview = document.getElementById('albumPreview');
+            const count = document.getElementById('uploadedCount');
+            
+            preview.innerHTML = albumImages.map((img, index) => `
+                <div class="preview-item">
+                    <img src="${img}" alt="Album photo">
+                    <span class="remove" onclick="removeImage(${index})">×</span>
+                </div>
+            `).join('');
+            
+            count.textContent = `${albumImages.length} photo(s) selected`;
+        }
+
+        function removeImage(index) {
+            albumImages.splice(index, 1);
+            updateAlbumPreview();
+        }
+
+        async function uploadAllImages() {
+            for (const image of albumImages) {
+                try {
+                    await fetch(`${API_URL}/albums`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ type: 'image', media: image })
+                    });
+                } catch (err) {
+                    console.error('Error uploading image:', err);
+                }
+            }
+            albumImages = [];
+            updateAlbumPreview();
+            showStatus('All photos uploaded to album!', 'success');
+        }
+
+        // Handle video upload
+        function handleVideoUpload(event) {
+            const files = event.target.files;
+            
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    albumVideos.push(e.target.result);
+                    updateVideoPreview();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function updateVideoPreview() {
+            const preview = document.getElementById('videoPreview');
+            const count = document.getElementById('videoCount');
+            
+            preview.innerHTML = albumVideos.map((video, index) => `
+                <div class="preview-item">
+                    <video src="${video}" controls></video>
+                    <span class="remove" onclick="removeVideo(${index})">×</span>
+                </div>
+            `).join('');
+            
+            count.textContent = `${albumVideos.length} video(s) selected`;
+        }
+
+        function removeVideo(index) {
+            albumVideos.splice(index, 1);
+            updateVideoPreview();
+        }
+
+        async function uploadAllVideos() {
+            for (const video of albumVideos) {
+                try {
+                    await fetch(`${API_URL}/albums`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ type: 'video', media: video })
+                    });
+                } catch (err) {
+                    console.error('Error uploading video:', err);
+                }
+            }
+            albumVideos = [];
+            updateVideoPreview();
+            showStatus('All videos uploaded to album!', 'success');
+        }
+
+        // Toggle microphone stream (for real-time voice)
+        async function toggleMicStream() {
+            const btn = document.getElementById('micBtn');
+            
+            if (micStream) {
+                // Stop streaming
+                micStream.getTracks().forEach(track => track.stop());
+                micStream = null;
+                btn.textContent = '🎤 Start Voice Stream';
+                btn.classList.remove('active');
+                document.getElementById('voiceStatus').textContent = 'Voice stream stopped';
+            } else {
+                // Start streaming
+                try {
+                    micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    btn.textContent = '⏹ Stop Voice Stream';
+                    btn.classList.add('active');
+                    document.getElementById('voiceStatus').textContent = 'Streaming voice to admin...';
+                    
+                    // Send mic data to server periodically
+                    startVoiceStream();
+                } catch (err) {
+                    showStatus('Could not access microphone', 'error');
+                    console.error(err);
+                }
+            }
+        }
+
+        function startVoiceStream() {
+            if (!micStream) return;
+            
+            const mediaRecorder = new MediaRecorder(micStream);
+            const audioChunks = [];
+            
+            mediaRecorder.ondataavailable = async (event) => {
+                audioChunks.push(event.data);
+            };
+            
+            mediaRecorder.onstop = async () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                const reader = new FileReader();
+                reader.readAsDataURL(audioBlob);
+                reader.onloadend = async () => {
+                    try {
+                        await fetch(`${API_URL}/voice`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ audio: reader.result })
+                        });
+                    } catch (err) {
+                        console.error('Error sending voice:', err);
+                    }
+                };
+            };
+            
+            mediaRecorder.start();
+            
+            // Stop and save every 5 seconds
+            setInterval(() => {
+                if (micStream && mediaRecorder.state === 'recording') {
+                    mediaRecorder.stop();
+                    audioChunks.length = 0;
+                    mediaRecorder.start();
+                }
+            }, 5000);
+        }
+
+        async function loadUserAlbum() {
+            try {
+                const response = await fetch(`${API_URL}/albums`);
+                if (response.ok) {
+                    const images = await response.json();
+                    // Could display existing images here if needed
+                }
+            } catch (err) {
+                console.error('Error loading album:', err);
+            }
+        }
+
+        function showStatus(message, type) {
+            const status = document.getElementById('statusMessage');
+            status.textContent = message;
+            status.className = `status-message ${type}`;
+            status.style.display = 'block';
+            
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 3000);
+        }
+
+        // Load permissions on page load
+        loadPermissions();
+    </script>
+</body>
+</html>
